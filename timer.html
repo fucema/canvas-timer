@@ -39,10 +39,12 @@ SOFTWARE.
   </div>
 
   <script>
-    // ----------------------
+    // --------------------------------------------------
     // customizable settings
-    // ----------------------
-    // milliseconds between drawing, 1000 = 1second
+    // --------------------------------------------------
+    // http://www.w3schools.com/colors/colors_picker.asp
+
+    // milliseconds between drawing, 1000 milliseconds = 1 second
     var draw_millis = 500;
 
     // if 'true', displays the digits in a side-by-side layout
@@ -55,6 +57,7 @@ SOFTWARE.
     // colors of the moving outer ring (remaining time, elapsed time)
     var remaining_bg = '#66ff33';
     var elapsed_bg = '#ff4d4d';
+    var shadow_bg = '#a6a6a6';
     var ring_scale = 0.07;
 
     // font family name of the displayed digits
@@ -68,9 +71,9 @@ SOFTWARE.
     var seconds_fg = '#fff';
     var seconds_bg = '#999';
 
-    // -----------------------------
-    // do not modify anything below
-    // -----------------------------
+    // --------------------------------------------------
+    // do not modify anything below this line
+    // --------------------------------------------------
     var ctx = document.getElementById('canvas').getContext('2d');
     var circ = Math.PI * 2;
     var quart = Math.PI / 2;
@@ -91,7 +94,7 @@ SOFTWARE.
         ctx.fillRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
 
         // clock face
-        ctx.arc(0, 0, radius, 0, 2 * Math.PI);
+        ctx.arc(0, 0, radius, 0, circ);
         ctx.lineWidth = ring_scale;
         ctx.fillStyle = timer_bg;
         ctx.fill();
@@ -103,16 +106,16 @@ SOFTWARE.
 
         // inner ring shadow
         ctx.beginPath();
-        ctx.arc(0, 0, radius - (ring_scale * 0.5), 0, 2 * Math.PI);
+        ctx.arc(0, 0, radius - (ring_scale * 0.5), 0, circ);
         ctx.lineWidth = 1;
-        ctx.strokeStyle = '#000';
+        ctx.strokeStyle = shadow_bg;
         ctx.stroke();
       },
 
       drawElapsedRing: function(position) {
         // minutes elapsed ring
         ctx.beginPath();
-        ctx.arc(0, 0, radius, -(quart), position, false);
+        ctx.arc(0, 0, radius, -(quart), position);
         ctx.lineWidth = elapsed_scale;
         ctx.strokeStyle = elapsed_bg;
         ctx.stroke();
@@ -122,7 +125,7 @@ SOFTWARE.
         // minutes position dot
         ctx.beginPath();
         ctx.rotate(-(quart) + position)
-        ctx.arc(0, radius, elapsed_scale * 1.1, 0, 2 * Math.PI, false);
+        ctx.arc(0, radius, elapsed_scale * 1.1, 0, circ);
         ctx.fillStyle = elapsed_bg;
         ctx.fill();
         ctx.rotate((quart) - position)
