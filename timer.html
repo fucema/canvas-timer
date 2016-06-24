@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+
+<body style='background-color: #fff;'>
+    <canvas id='canvas' width='400' height='400' style='display: block;'>This browser does not support the HTML5 canvas tag.</canvas>
+    <script>
+        // ----------------------
+        // customizable settings
+        // ----------------------
+        // milliseconds between drawing, 1000 = 1second
+        var draw_millis = 1000;
+
+        // if 'true', displays the digits in a side-by-side layout
+        var side_by_side = true;
+
+        // color of the center of the timer behind the digits
+        var timer_bg = '#aaa';
+        var timer_scale = 0.9;
+
+        // colors of the moving outer ring (remaining time, elapsed time)
+        var remaining_bg = '#66ff33';
+        var elapsed_bg = 'red';
+        var ring_scale = 0.07;
+
+        // font family name of the displayed digits
+        var font_name = 'arial';
+
+        // stroke and fill colors of the displayed minutes digits
+        var minutes_fg = '#000';
+        var minutes_bg = '#fff';
+
+        // stroke and fill colors of the displayed seconds digits
+        var seconds_fg = '#000';
+        var seconds_bg = '#fff';
+
+        // -----------------------------
+        // do not modify anything below
+        // -----------------------------
+        var ctx = document.getElementById('canvas').getContext('2d');
+        var circ = Math.PI * 2;
+        var quart = Math.PI / 2;
+
+        var radius = canvas.height / 2;
+        ctx.translate(radius, radius);
+        radius = radius * timer_scale;
+        var elapsed_scale = ring_scale + 0.01;
+        ring_scale = radius * ring_scale;
+        elapsed_scale = radius * elapsed_scale;
+
+        ctx.beginPath();
+        ctx.arc(0, 0, radius, 0, 2 * Math.PI);
+        ctx.lineWidth = ring_scale;
+        ctx.fillStyle = timer_bg;
+        ctx.fill();
+
+        ctx.strokeStyle = remaining_bg;
+        ctx.stroke();
+
+        setInterval(draw, draw_millis);
+
+        function draw() {
+            now = new Date();
+            minutes = now.getMinutes();
+            seconds = now.getSeconds();
+
+            // minutes remaining ring
+            ctx.beginPath();
+            ctx.arc(0, 0, radius, 0, 2 * Math.PI);
+            ctx.lineWidth = radius * 2;
+            ctx.strokeStyle = document.body.style.backgroundColor;
+            ctx.stroke();
+            ctx.lineWidth = ring_scale;
+            ctx.fillStyle = timer_bg;
+            ctx.fill();
+            ctx.strokeStyle = remaining_bg;
+            ctx.stroke();
+
+            // minutes elapsed ring
+            ctx.beginPath();
+            ctx.arc(0, 0, radius, -(quart), (((circ) * minutes / 60) - quart) + (seconds * Math.PI / (1800)), false);
+            ctx.lineWidth = elapsed_scale;
+            ctx.strokeStyle = elapsed_bg;
+            ctx.stroke();
+
+            // minutes position dot
+            pos = -(quart) + (((circ) * minutes / 60) - quart) + (seconds * Math.PI / (1800));
+            ctx.beginPath();
+            ctx.rotate(pos)
+            ctx.arc(0, radius, elapsed_scale * 1.1, 0, 2*Math.PI, false);
+            ctx.fillStyle = elapsed_bg;
+            ctx.fill();
+            ctx.rotate(-pos)
+
+            if (side_by_side) {
+                drawDigitsSideBySide(minutes, seconds);
+            } else {
+                drawDigitsTopDown(minutes, seconds);
+            }
+        }
+
+        function drawDigitsTopDown(minutes, seconds) {
+            remaining_minutes = (59 - minutes).toString();
+            remaining_seconds = (60 - seconds).toString();
+
+            // digital minutes
+            minutes_px = radius * 1.1;
+            minutes_dx = 0;
+            minutes_dy = minutes_px * 0.15;
+            ctx.font = minutes_px + 'px ' + font_name;
+            ctx.textBaseline = 'alphabetic';
+            ctx.textAlign = 'center';
+            ctx.strokeStyle = minutes_fg;
+            ctx.lineWidth = radius * 0.02;
+            ctx.strokeText(remaining_minutes, minutes_dx, minutes_dy);
+            ctx.fillStyle = minutes_bg
+            ctx.fillText(remaining_minutes, minutes_dx, minutes_dy);
+
+            // digital seconds
+            seconds_px = radius * 0.4;
+            seconds_dx = seconds_px * 0.5;
+            seconds_dy = radius * 0.7;
+            ctx.font = seconds_px + 'px ' + font_name;
+            ctx.textBaseline = 'alphabetic';
+            ctx.textAlign = 'right';
+            ctx.strokeStyle = seconds_fg;
+            ctx.lineWidth = radius * 0.02;
+            ctx.strokeText(remaining_seconds, seconds_dx, seconds_dy);
+            ctx.fillStyle = seconds_bg
+            ctx.fillText(remaining_seconds, seconds_dx, seconds_dy);
+
+            // seconds 's' abbrev
+            s_px = seconds_px * 0.5;
+            s_dx = seconds_dx * 1.1;
+            s_dy = seconds_dy;
+            ctx.font = s_px + 'px ' + font_name;
+            ctx.textAlign = 'left';
+            ctx.lineWidth = radius * 0.02;
+            ctx.strokeText('s', s_dx, s_dy);
+            ctx.fillStyle = seconds_bg
+            ctx.fillText('s', s_dx, s_dy);            
+        }
+
+        function drawDigitsSideBySide(minutes, seconds) {
+            remaining_minutes = (59 - minutes).toString();
+            remaining_seconds = (60 - seconds).toString();
+
+            // digital minutes
+            minutes_px = radius * 1;
+            minutes_dx = radius * 0.3;
+            minutes_dy = radius * 0.4;
+            ctx.font = minutes_px + 'px ' + font_name;
+            ctx.textBaseline = 'alphabetic';
+            ctx.textAlign = 'right';
+            ctx.strokeStyle = minutes_fg;
+            ctx.lineWidth = radius * 0.03;
+            ctx.strokeText(remaining_minutes, minutes_dx, minutes_dy);
+            ctx.fillStyle = minutes_bg
+            ctx.fillText(remaining_minutes, minutes_dx, minutes_dy);
+
+            // digital seconds
+            seconds_px = radius * 0.4;
+            seconds_dx = minutes_dx + 10;
+            seconds_dy = minutes_dy;
+            ctx.font = seconds_px + 'px ' + font_name;
+            ctx.textBaseline = 'alphabetic';
+            ctx.textAlign = 'left';
+            ctx.strokeStyle = seconds_fg;
+            ctx.lineWidth = radius * 0.03;
+            ctx.strokeText(remaining_seconds, seconds_dx, seconds_dy);
+            ctx.fillStyle = seconds_bg
+            ctx.fillText(remaining_seconds, seconds_dx, seconds_dy);
+        }
+
+    </script>
+</body>
+
+</html>
