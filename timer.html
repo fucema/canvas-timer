@@ -28,191 +28,196 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 
-<body style='background-color: #fff;'>
-    <div style='display: inline-block;'>
-        <h1 style='font: 3.2em arial; text-align: center; color: #999; '>This call ends in</h1>
-        <canvas id='canvas' width='400' height='400'>This browser does not support the HTML5 canvas tag.</canvas>
-    </div>
+<body style='background-color: #fff; margin: 0 0 0 0; padding: 0 0 0 0;'>
 
-    <script>
-        // ----------------------
-        // customizable settings
-        // ----------------------
-        // milliseconds between drawing, 1000 = 1second
-        var draw_millis = 500;
+  <div id='canvas-timer' style='display: inline-block;'>
 
-        // if 'true', displays the digits in a side-by-side layout
-        var side_by_side = false;
+    <h1 id='title' style='margin: 0 0 0 0; padding: 0 0 0 0; font: 3.2em arial; text-align: center; color: #999;'>This call ends in</h1>
 
-        // color of the center of the timer behind the digits
-        var timer_bg = '#ffffe6';
-        var timer_scale = 0.9;
+    <canvas id='canvas' width='400' height='400' style='margin: 0 0 0 0; padding: 0 0 0 0;'>This browser does not support the HTML5 canvas tag.</canvas>
 
-        // colors of the moving outer ring (remaining time, elapsed time)
-        var remaining_bg = '#66ff33';
-        var elapsed_bg = '#ff4d4d';
-        var ring_scale = 0.07;
+  </div>
 
-        // font family name of the displayed digits
-        var font_name = 'arial';
+  <script>
+    // ----------------------
+    // customizable settings
+    // ----------------------
+    // milliseconds between drawing, 1000 = 1second
+    var draw_millis = 500;
 
-        // stroke and fill colors of the displayed minutes digits
-        var minutes_fg = '#fff';
-        var minutes_bg = '#999';
+    // if 'true', displays the digits in a side-by-side layout
+    var side_by_side = false;
 
-        // stroke and fill colors of the displayed seconds digits
-        var seconds_fg = '#fff';
-        var seconds_bg = '#999';
+    // color of the center of the timer behind the digits
+    var timer_bg = '#ffffe6';
+    var timer_scale = 0.9;
 
-        // -----------------------------
-        // do not modify anything below
-        // -----------------------------
-        var ctx = document.getElementById('canvas').getContext('2d');
-        var circ = Math.PI * 2;
-        var quart = Math.PI / 2;
+    // colors of the moving outer ring (remaining time, elapsed time)
+    var remaining_bg = '#66ff33';
+    var elapsed_bg = '#ff4d4d';
+    var ring_scale = 0.07;
 
-        var elapsed_scale = ring_scale;
-        var radius = canvas.height / 2;
+    // font family name of the displayed digits
+    var font_name = 'arial';
 
-        ctx.translate(radius, radius);
-        radius = radius * timer_scale;
-        ring_scale = radius * ring_scale;
-        elapsed_scale = radius * elapsed_scale;
+    // stroke and fill colors of the displayed minutes digits
+    var minutes_fg = '#fff';
+    var minutes_bg = '#999';
 
+    // stroke and fill colors of the displayed seconds digits
+    var seconds_fg = '#fff';
+    var seconds_bg = '#999';
+
+    // -----------------------------
+    // do not modify anything below
+    // -----------------------------
+    var ctx = document.getElementById('canvas').getContext('2d');
+    var circ = Math.PI * 2;
+    var quart = Math.PI / 2;
+
+    var elapsed_scale = ring_scale;
+    var radius = canvas.height / 2;
+
+    ctx.translate(radius, radius);
+    radius = radius * timer_scale;
+    ring_scale = radius * ring_scale;
+    elapsed_scale = radius * elapsed_scale;
+
+    var CounterDownerThingaMaboob = {
+      drawRemainingRing: function() {
         ctx.beginPath();
+        // clear the canvas
+        ctx.fillStyle = document.body.style.backgroundColor;
+        ctx.fillRect(-canvas.width / 2, -canvas.height / 2, canvas.width, canvas.height);
+
+        // clock face
         ctx.arc(0, 0, radius, 0, 2 * Math.PI);
         ctx.lineWidth = ring_scale;
         ctx.fillStyle = timer_bg;
         ctx.fill();
 
-        function drawRemainingRing() {
-            // minutes remaining ring
-            ctx.beginPath();
-            ctx.arc(0, 0, radius, 0, 2 * Math.PI);
-            ctx.lineWidth = radius * 2;
-            ctx.strokeStyle = document.body.style.backgroundColor;
-            ctx.stroke();
+        // minutes remaining ring
+        ctx.lineWidth = ring_scale;
+        ctx.strokeStyle = remaining_bg;
+        ctx.stroke();
 
-            ctx.fillStyle = timer_bg;
-            ctx.fill();
+        // inner ring shadow
+        ctx.beginPath();
+        ctx.arc(0, 0, radius - (ring_scale * 0.5), 0, 2 * Math.PI);
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = '#000';
+        ctx.stroke();
+      },
 
-            ctx.lineWidth = ring_scale;
+      drawElapsedRing: function(position) {
+        // minutes elapsed ring
+        ctx.beginPath();
+        ctx.arc(0, 0, radius, -(quart), position, false);
+        ctx.lineWidth = elapsed_scale;
+        ctx.strokeStyle = elapsed_bg;
+        ctx.stroke();
+      },
 
-            ctx.strokeStyle = remaining_bg;
-            ctx.stroke();
+      drawPositionDot: function(position) {
+        // minutes position dot
+        ctx.beginPath();
+        ctx.rotate(-(quart) + position)
+        ctx.arc(0, radius, elapsed_scale * 1.1, 0, 2 * Math.PI, false);
+        ctx.fillStyle = elapsed_bg;
+        ctx.fill();
+        ctx.rotate((quart) - position)
+      },
+
+      drawDigitsTopDown: function(remaining_minutes, remaining_seconds) {
+        // digital minutes
+        minutes_px = radius * 1.1;
+        minutes_dx = 0;
+        minutes_dy = minutes_px * 0.15;
+        ctx.font = minutes_px + 'px ' + font_name;
+        ctx.textBaseline = 'alphabetic';
+        ctx.textAlign = 'center';
+        ctx.strokeStyle = minutes_fg;
+        ctx.lineWidth = radius * 0.02;
+        ctx.strokeText(remaining_minutes, minutes_dx, minutes_dy);
+        ctx.fillStyle = minutes_bg
+        ctx.fillText(remaining_minutes, minutes_dx, minutes_dy);
+
+        // digital seconds
+        seconds_px = radius * 0.4;
+        seconds_dx = seconds_px * 0.5;
+        seconds_dy = radius * 0.7;
+        ctx.font = seconds_px + 'px ' + font_name;
+        ctx.textBaseline = 'alphabetic';
+        ctx.textAlign = 'right';
+        ctx.strokeStyle = seconds_fg;
+        ctx.lineWidth = radius * 0.02;
+        ctx.strokeText(remaining_seconds, seconds_dx, seconds_dy);
+        ctx.fillStyle = seconds_bg
+        ctx.fillText(remaining_seconds, seconds_dx, seconds_dy);
+
+        // seconds 's' abbrev
+        s_px = seconds_px * 0.5;
+        s_dx = seconds_dx * 1.1;
+        s_dy = seconds_dy;
+        ctx.font = s_px + 'px ' + font_name;
+        ctx.textAlign = 'left';
+        ctx.lineWidth = radius * 0.02;
+        ctx.strokeText('s', s_dx, s_dy);
+        ctx.fillStyle = seconds_bg
+        ctx.fillText('s', s_dx, s_dy);
+      },
+
+      drawDigitsSideBySide: function(remaining_minutes, remaining_seconds) {
+        // digital minutes
+        minutes_px = radius * 1;
+        minutes_dx = radius * 0.3;
+        minutes_dy = radius * 0.4;
+        ctx.font = minutes_px + 'px ' + font_name;
+        ctx.textBaseline = 'alphabetic';
+        ctx.textAlign = 'right';
+        ctx.strokeStyle = minutes_fg;
+        ctx.lineWidth = radius * 0.03;
+        ctx.strokeText(remaining_minutes, minutes_dx, minutes_dy);
+        ctx.fillStyle = minutes_bg
+        ctx.fillText(remaining_minutes, minutes_dx, minutes_dy);
+
+        // digital seconds
+        seconds_px = radius * 0.4;
+        seconds_dx = minutes_dx + 10;
+        seconds_dy = minutes_dy;
+        ctx.font = seconds_px + 'px ' + font_name;
+        ctx.textBaseline = 'alphabetic';
+        ctx.textAlign = 'left';
+        ctx.strokeStyle = seconds_fg;
+        ctx.lineWidth = radius * 0.03;
+        ctx.strokeText(remaining_seconds, seconds_dx, seconds_dy);
+        ctx.fillStyle = seconds_bg
+        ctx.fillText(remaining_seconds, seconds_dx, seconds_dy);
+      },
+
+      draw: function() {
+        var now = new Date();
+        var minutes = now.getMinutes();
+        var seconds = now.getSeconds();
+        var pos = (((circ) * minutes / 60) - quart) + (seconds * Math.PI / (1800));
+
+        CounterDownerThingaMaboob.drawRemainingRing();
+        CounterDownerThingaMaboob.drawElapsedRing(pos);
+        CounterDownerThingaMaboob.drawPositionDot(pos);
+
+        var remaining_minutes = (59 - minutes).toString();
+        var remaining_seconds = (59 - seconds).toString();
+
+        if (side_by_side) {
+          CounterDownerThingaMaboob.drawDigitsSideBySide(remaining_minutes, remaining_seconds);
+        } else {
+          CounterDownerThingaMaboob.drawDigitsTopDown(remaining_minutes, remaining_seconds);
         }
+      }
+    }
 
-        function drawElapsedRing(position) {
-            // minutes elapsed ring
-            ctx.beginPath();
-            ctx.arc(0, 0, radius, -(quart), position, false);
-            ctx.lineWidth = elapsed_scale;
-            ctx.strokeStyle = elapsed_bg;
-            ctx.stroke();
-        }
-
-        function drawPositionDot(position) {
-            // minutes position dot
-            ctx.beginPath();
-            ctx.rotate(-(quart) + position)
-            ctx.arc(0, radius, elapsed_scale * 1.1, 0, 2 * Math.PI, false);
-            ctx.fillStyle = elapsed_bg;
-            ctx.fill();
-            ctx.rotate((quart) - position)
-        }
-
-        function drawDigitsTopDown(minutes, seconds) {
-            remaining_minutes = (59 - minutes).toString();
-            remaining_seconds = (59 - seconds).toString();
-
-            // digital minutes
-            minutes_px = radius * 1.1;
-            minutes_dx = 0;
-            minutes_dy = minutes_px * 0.15;
-            ctx.font = minutes_px + 'px ' + font_name;
-            ctx.textBaseline = 'alphabetic';
-            ctx.textAlign = 'center';
-            ctx.strokeStyle = minutes_fg;
-            ctx.lineWidth = radius * 0.02;
-            ctx.strokeText(remaining_minutes, minutes_dx, minutes_dy);
-            ctx.fillStyle = minutes_bg
-            ctx.fillText(remaining_minutes, minutes_dx, minutes_dy);
-
-            // digital seconds
-            seconds_px = radius * 0.4;
-            seconds_dx = seconds_px * 0.5;
-            seconds_dy = radius * 0.7;
-            ctx.font = seconds_px + 'px ' + font_name;
-            ctx.textBaseline = 'alphabetic';
-            ctx.textAlign = 'right';
-            ctx.strokeStyle = seconds_fg;
-            ctx.lineWidth = radius * 0.02;
-            ctx.strokeText(remaining_seconds, seconds_dx, seconds_dy);
-            ctx.fillStyle = seconds_bg
-            ctx.fillText(remaining_seconds, seconds_dx, seconds_dy);
-
-            // seconds 's' abbrev
-            s_px = seconds_px * 0.5;
-            s_dx = seconds_dx * 1.1;
-            s_dy = seconds_dy;
-            ctx.font = s_px + 'px ' + font_name;
-            ctx.textAlign = 'left';
-            ctx.lineWidth = radius * 0.02;
-            ctx.strokeText('s', s_dx, s_dy);
-            ctx.fillStyle = seconds_bg
-            ctx.fillText('s', s_dx, s_dy);
-        }
-
-        function drawDigitsSideBySide(minutes, seconds) {
-            remaining_minutes = (59 - minutes).toString();
-            remaining_seconds = (59 - seconds).toString();
-
-            // digital minutes
-            minutes_px = radius * 1;
-            minutes_dx = radius * 0.3;
-            minutes_dy = radius * 0.4;
-            ctx.font = minutes_px + 'px ' + font_name;
-            ctx.textBaseline = 'alphabetic';
-            ctx.textAlign = 'right';
-            ctx.strokeStyle = minutes_fg;
-            ctx.lineWidth = radius * 0.03;
-            ctx.strokeText(remaining_minutes, minutes_dx, minutes_dy);
-            ctx.fillStyle = minutes_bg
-            ctx.fillText(remaining_minutes, minutes_dx, minutes_dy);
-
-            // digital seconds
-            seconds_px = radius * 0.4;
-            seconds_dx = minutes_dx + 10;
-            seconds_dy = minutes_dy;
-            ctx.font = seconds_px + 'px ' + font_name;
-            ctx.textBaseline = 'alphabetic';
-            ctx.textAlign = 'left';
-            ctx.strokeStyle = seconds_fg;
-            ctx.lineWidth = radius * 0.03;
-            ctx.strokeText(remaining_seconds, seconds_dx, seconds_dy);
-            ctx.fillStyle = seconds_bg
-            ctx.fillText(remaining_seconds, seconds_dx, seconds_dy);
-        }
-
-        function draw() {
-            now = new Date();
-            minutes = now.getMinutes();
-            seconds = now.getSeconds();
-            pos = (((circ) * minutes / 60) - quart) + (seconds * Math.PI / (1800));
-
-            this.drawRemainingRing();
-            this.drawElapsedRing(pos);
-            this.drawPositionDot(pos);
-
-            if (side_by_side) {
-                this.drawDigitsSideBySide(minutes, seconds);
-            } else {
-                this.drawDigitsTopDown(minutes, seconds);
-            }
-        }
-
-        setInterval(draw, draw_millis);
-    </script>
+    setInterval(CounterDownerThingaMaboob.draw, draw_millis);
+  </script>
 </body>
 
 </html>
