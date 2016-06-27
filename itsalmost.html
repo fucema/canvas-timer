@@ -71,7 +71,7 @@ SOFTWARE.
   </style>
 
   <div id='countdown' style='display: inline-block;'>
-    <h1>SP-13 ends in</h1>
+    <h1 id='title'></h1>
     <div>
       <span class="hours"></span>
       <div class="label">Hours</div>
@@ -90,7 +90,6 @@ SOFTWARE.
     // --------------------------------------------------
     // customizable settings
     // --------------------------------------------------
-    var deadline = 'July 1 2016 20:00:00 GMT-0400';
     var draw_millis = 100;
 
     var periods = [
@@ -103,22 +102,35 @@ SOFTWARE.
       ['SP-19 ends in', 'September 23 2016 20:00:00 GMT-0400'],
       ['SP-20 ends in', 'October 7 2016 20:00:00 GMT-0400'],
       ['SP-21 ends in', 'October 21 2016 20:00:00 GMT-0400'],
-      ['SP-22 ends in', 'November 1 2016 20:00:00 GMT-0400'],
-      ['SP-22 ends in', 'November 1 2016 20:00:00 GMT-0400'],
-      ['SP-22 ends in', 'December 4 2016 20:00:00 GMT-0400'],
-      ['SP-22 ends in', 'December 18 2016 20:00:00 GMT-0400'],
+      ['SP-23 ends in', 'November 1 2016 20:00:00 GMT-0400'],
+      ['SP-24 ends in', 'November 1 2016 20:00:00 GMT-0400'],
+      ['SP-25 ends in', 'December 4 2016 20:00:00 GMT-0400'],
+      ['SP-26 ends in', 'December 18 2016 20:00:00 GMT-0400'],
     ];
 
     // --------------------------------------------------
     // do not modify anything below this line
     // --------------------------------------------------
     var countdown = document.getElementById('countdown');
+    var title = document.getElementById('title');
     var hoursSpan = countdown.querySelector('.hours');
     var minutesSpan = countdown.querySelector('.minutes');
     var secondsSpan = countdown.querySelector('.seconds');
     var millisecondsSpan = countdown.querySelector('.milliseconds');
 
     var ItsAlmost = {
+      setNextPeriod: function() {
+        var now = Date.now();
+        for (i = 0; i < periods.length; i++) {
+          var next = Date.parse(periods[i][1]);
+          if (now <= next) {
+            title.innerHTML = periods[i][0];
+            deadline = periods[i][1];
+            break;
+          }
+        }
+      },
+
       getTimeRemaining: function(enddatetime) {
         var t = Date.parse(enddatetime) - Date.now();
         var seconds = Math.floor((t / 1000) % 60);
@@ -132,7 +144,7 @@ SOFTWARE.
         }
       },
 
-      draw: function() {
+      update: function() {
         var t = ItsAlmost.getTimeRemaining(deadline);
 
         hoursSpan.innerHTML = ('00' + t.hours).slice(-3);
@@ -140,13 +152,14 @@ SOFTWARE.
         secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
 
         if (t.total <= 0) {
-          clearInterval(timeinterval);
+          ItsAlmost.setNextPeriod();
         }
       },
     };
 
-    ItsAlmost.draw();
-    setInterval(ItsAlmost.draw, draw_millis);
+    ItsAlmost.setNextPeriod();
+    ItsAlmost.update();
+    setInterval(ItsAlmost.update, draw_millis);
   </script>
 </body>
 
