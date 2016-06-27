@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<!-- author: Seon Lee (fucema@gmail.com) -->
+<!-- website: https://github.com/fucema/canvas-timer -->
+
+<!-- 
+MIT License
+
+Copyright (c) 2016 Seon Lee (fucema@gmail.com)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+
+<body style='background-color: #fff; margin: 10px; padding: 0 0 0 0;'>
+
+  <style media='screen' type='text/css'>
+    #countdown {
+      font-family: arial;
+      color: #999;
+      display: inline-block;
+      font-weight: 100;
+      text-align: center;
+    }
+    
+    #countdown> div {
+      padding: 0.5em;
+      margin: 0.33em;
+      border-radius: 0.5em;
+      background: #ffffe6;
+      display: inline-block;
+      border: 2px solid #999;
+    }
+    
+    #countdown div> span {
+      padding: 0;
+      background: #ffffe6;
+      display: inline-block;
+      font-size: 3.2em;
+    }
+    
+    .label {
+      padding: 0;
+      font-size: 1em;
+      color: #999;
+    }
+    
+    #countdown h1 {
+      margin: 0;
+      padding: 0;
+      font: 3.2em arial;
+      text-align: center;
+      color: #999;
+    }
+  </style>
+
+    <div id='countdown' style='display: inline-block;'>
+      <h1>SP-13 ends in</h1>
+      <div>
+        <span class="hours"></span>
+        <div class="label">Hours</div>
+      </div>
+      <div>
+        <span class="minutes"></span>
+        <div class="label">Minutes</div>
+      </div>
+      <div>
+        <span class="seconds"></span>
+        <div class="label">Seconds</div>
+      </div>
+    </div>
+
+  <script>
+    // --------------------------------------------------
+    // customizable settings
+    // --------------------------------------------------
+    var deadline = 'July 1 2016 23:59:59 GMT-0400';
+    var draw_millis = 43;
+
+    // --------------------------------------------------
+    // do not modify anything below this line
+    // --------------------------------------------------
+    var countdown = document.getElementById('countdown');
+    var hoursSpan = countdown.querySelector('.hours');
+    var minutesSpan = countdown.querySelector('.minutes');
+    var secondsSpan = countdown.querySelector('.seconds');
+    var millisecondsSpan = countdown.querySelector('.milliseconds');
+
+    var ItsAlmost = {
+      getTimeRemaining: function(enddatetime) {
+        var t = Date.parse(enddatetime) - Date.now();
+        //var milliseconds = (t % 1000);
+        var seconds = Math.floor((t / 1000) % 60);
+        var minutes = Math.floor((t / 1000 / 60) % 60);
+        var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
+        //var days = ;
+        hours = hours + (Math.floor(t / (1000 * 60 * 60 * 24)) * 24);
+        return {
+          'total': t,
+          'hours': hours,
+          'minutes': minutes,
+          'seconds': seconds,
+        }
+      },
+
+      draw: function() {
+        var t = ItsAlmost.getTimeRemaining(deadline);
+
+        hoursSpan.innerHTML = ('00' + t.hours).slice(-3);
+        minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
+        secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
+
+        if (t.total <= 0) {
+          clearInterval(timeinterval);
+        }
+      },
+    };
+
+    ItsAlmost.draw();
+    setInterval(ItsAlmost.draw, draw_millis);
+  </script>
+</body>
+
+</html>

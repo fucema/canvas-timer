@@ -2,7 +2,7 @@
 <html>
 
 <!-- author: Seon Lee (fucema@gmail.com) -->
-<!-- website: https://github.com/fucema/canvas-timer -->
+<!-- website: https://github.com/fucema/timer-div -->
 
 <!-- 
 MIT License
@@ -30,7 +30,7 @@ SOFTWARE.
 
 <body style='background-color: #fff; margin: 0 0 0 0; padding: 0 0 0 0;'>
 
-  <div id='canvas-timer' style='display: inline-block;'>
+  <div id='timer-div' style='display: inline-block;'>
 
     <h1 id='title' style='margin: 0 0 0 0; padding: 0 0 0 0; font: 3.2em arial; text-align: center; color: #999;'>This call ends in</h1>
 
@@ -86,7 +86,7 @@ SOFTWARE.
     ring_scale = radius * ring_scale;
     elapsed_scale = radius * elapsed_scale;
 
-    var CounterDownerThingaMaboob = {
+    var HourlyTimer = {
       drawRemainingRing: function() {
         ctx.beginPath();
         // clear the canvas
@@ -204,23 +204,23 @@ SOFTWARE.
         var seconds = now.getSeconds();
         var pos = (((circ) * minutes / 60) - quart) + (seconds * Math.PI / (1800));
 
-        CounterDownerThingaMaboob.drawRemainingRing();
-        CounterDownerThingaMaboob.drawElapsedRing(pos);
-        CounterDownerThingaMaboob.drawPositionDot(pos);
+        HourlyTimer.drawRemainingRing();
+        HourlyTimer.drawElapsedRing(pos);
+        HourlyTimer.drawPositionDot(pos);
 
         var remaining_minutes = (59 - minutes).toString();
         var remaining_seconds = (59 - seconds).toString();
 
         if (side_by_side) {
-          CounterDownerThingaMaboob.drawDigitsSideBySide(remaining_minutes, remaining_seconds);
+          HourlyTimer.drawDigitsSideBySide(remaining_minutes, remaining_seconds);
         } else {
-          CounterDownerThingaMaboob.drawDigitsTopDown(remaining_minutes, remaining_seconds);
+          HourlyTimer.drawDigitsTopDown(remaining_minutes, remaining_seconds);
         }
       }
     }
 
-    CounterDownerThingaMaboob.draw();
-    setInterval(CounterDownerThingaMaboob.draw, draw_millis);
+    HourlyTimer.draw();
+    setInterval(HourlyTimer.draw, draw_millis);
   </script>
 </body>
 
