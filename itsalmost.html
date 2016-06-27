@@ -70,21 +70,21 @@ SOFTWARE.
     }
   </style>
 
-    <div id='countdown' style='display: inline-block;'>
-      <h1>SP-13 ends in</h1>
-      <div>
-        <span class="hours"></span>
-        <div class="label">Hours</div>
-      </div>
-      <div>
-        <span class="minutes"></span>
-        <div class="label">Minutes</div>
-      </div>
-      <div>
-        <span class="seconds"></span>
-        <div class="label">Seconds</div>
-      </div>
+  <div id='countdown' style='display: inline-block;'>
+    <h1>SP-13 ends in</h1>
+    <div>
+      <span class="hours"></span>
+      <div class="label">Hours</div>
     </div>
+    <div>
+      <span class="minutes"></span>
+      <div class="label">Minutes</div>
+    </div>
+    <div>
+      <span class="seconds"></span>
+      <div class="label">Seconds</div>
+    </div>
+  </div>
 
   <script>
     // --------------------------------------------------
@@ -121,12 +121,9 @@ SOFTWARE.
     var ItsAlmost = {
       getTimeRemaining: function(enddatetime) {
         var t = Date.parse(enddatetime) - Date.now();
-        //var milliseconds = (t % 1000);
         var seconds = Math.floor((t / 1000) % 60);
         var minutes = Math.floor((t / 1000 / 60) % 60);
-        var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
-        //var days = ;
-        hours = hours + (Math.floor(t / (1000 * 60 * 60 * 24)) * 24);
+        var hours = Math.floor((t / (3600000)));
         return {
           'total': t,
           'hours': hours,
