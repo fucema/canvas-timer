@@ -31,23 +31,31 @@ SOFTWARE.
 <body style='background-color:#fff; margin:0; padding:0; font-family:Arial; color:#888;'>
 
   <style media='screen' type='text/css'>
-    #daydate .dayofweek {  } 
-    .timer-pane .description { text-align:center; font-weight:300; font-size:40px; word-break:break-word; margin:0 0 40px; line-height:68px; padding:0 30px;  cursor:default;}
+    #daydate { margin:0 0 30px; }
+    #daydate .dayofweek,
+    #daydate .datetime { padding:0 30px; } 
+    .timer-pane .description { text-align:center; font-weight:300; font-size:40px; word-break:break-word; margin:0 0 30px; line-height:68px; padding:0 30px;  cursor:default; }
     .timer-pane .description span.qualified,
-    .timer-pane .timer { font-size:40px; font-weight:300; text-align: center; margin-left:30px; line-height:46px; cursor:default;}
+    .timer-pane .timer { font-size:40px; font-weight:300; text-align: center; margin-left:30px; line-height:46px; cursor:default; }
     .timer-pane .timer span.days,
     .timer-pane .timer span.hours,
     .timer-pane .timer span.minutes,
     .timer-pane .timer span.seconds,
-    .timer-pane .timer span.milliseconds { font-weight:600; color:#666;}
+    .timer-pane .timer span.milliseconds { font-weight:600; color:#666; }
     .timer-pane .timer .seconds-container { min-width:260px; font-weight:300; text-align:left; display: inline-block;}
-    .timer-pane .timer .seconds-container span { font-weight:600;}
-    .timer-pane .timer span.milliseconds { font-size:0.5em; color:#ccc7c6; display:inline-block; text-align: left; width:40px;}
+    .timer-pane .timer .seconds-container span { font-weight:600; }
+    .timer-pane .timer span.milliseconds { font-size:0.5em; color:#ccc7c6; display:inline-block; text-align: left; width:40px; }
   </style>
 
   <div id="daydate">
     <div class="dayofweek"></div>
     <div class="datetime"></div>
+  </div>
+
+  <div id="quarterly">
+  </div>
+
+  <div id="hourly">
   </div>
 
   <div id='salesperiod' class='timer-pane'>
@@ -71,19 +79,19 @@ SOFTWARE.
     var draw_millis = 51;
 
     var periods = [
-      ['SP-13', 'July 1 2016 20:00:00 GMT-0400'],
-      ['SP-14', 'July 15 2016 20:00:00 GMT-0400'],
-      ['SP-15', 'July 29 2016 20:00:00 GMT-0400'],
-      ['SP-16', 'August 12 2016 20:00:00 GMT-0400'],
-      ['SP-17', 'August 26 2016 20:00:00 GMT-0400'],
-      ['SP-18', 'September 9 2016 20:00:00 GMT-0400'],
-      ['SP-19', 'September 23 2016 20:00:00 GMT-0400'],
-      ['SP-20', 'October 7 2016 20:00:00 GMT-0400'],
-      ['SP-21', 'October 21 2016 20:00:00 GMT-0400'],
-      ['SP-23', 'November 1 2016 20:00:00 GMT-0400'],
-      ['SP-24', 'November 1 2016 20:00:00 GMT-0400'],
-      ['SP-25', 'December 4 2016 20:00:00 GMT-0400'],
-      ['SP-26', 'December 18 2016 20:00:00 GMT-0400'],
+    ['SP-13', 'July 1 2016 20:00:00 GMT-0400'],
+    ['SP-14', 'July 15 2016 20:00:00 GMT-0400'],
+    ['SP-15', 'July 29 2016 20:00:00 GMT-0400'],
+    ['SP-16', 'August 12 2016 20:00:00 GMT-0400'],
+    ['SP-17', 'August 26 2016 20:00:00 GMT-0400'],
+    ['SP-18', 'September 9 2016 20:00:00 GMT-0400'],
+    ['SP-19', 'September 23 2016 20:00:00 GMT-0400'],
+    ['SP-20', 'October 7 2016 20:00:00 GMT-0400'],
+    ['SP-21', 'October 21 2016 20:00:00 GMT-0400'],
+    ['SP-23', 'November 1 2016 20:00:00 GMT-0400'],
+    ['SP-24', 'November 1 2016 20:00:00 GMT-0400'],
+    ['SP-25', 'December 4 2016 20:00:00 GMT-0400'],
+    ['SP-26', 'December 18 2016 20:00:00 GMT-0400'],
     ];
 
     // --------------------------------------------------
@@ -107,7 +115,7 @@ SOFTWARE.
     var millisecondsSpan = salesperiod.querySelector('span.milliseconds');
 
     var CurrentDayTime = {
-      
+
     };
     var daydate = document.getElementById('daydate');
     var now = new Date();
